@@ -20,20 +20,20 @@ import {useAlertContext} from "../context/alertContext";
 const ContactMeSection = () => {
   const {isLoading, response, submit} = useSubmit();
   const { onOpen } = useAlertContext();
-  const [type, message] = [response.type, response.message]
+  // const [type, message] = [response.type, response.message]
 
   const formik = useFormik({
     initialValues: {
       firstName: '',
       email: '',
-      type: '',
+      type: 'hireMe',
       comment: ''
     },
     onSubmit: (values) => {
       // e.preventDefault();
       submit(values);
-      onOpen(type, message);
-      formik.resetForm();
+      // onOpen(response.type, response.message);
+      // formik.resetForm();
     },
     validationSchema: Yup.object({
         firstName: Yup.string().required("Required"),
@@ -42,6 +42,15 @@ const ContactMeSection = () => {
         comment: Yup.string().required("Required"),
     }),
   });
+
+  useEffect(() => { 
+    if (response) { 
+      onOpen(response.type, response.message); 
+      if (response.type === 'success') { 
+        formik.resetForm(); 
+      } 
+    } 
+  }, [response]);
 
   return (
     <FullScreenSection
